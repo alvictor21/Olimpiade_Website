@@ -63,7 +63,7 @@ const admin = {
   avatar: null, // isi dengan URL foto jika ada, misal: "https://..."
 };
 
-export default function Sidebar({ activePath = "/admin" }) {
+export default function Sidebar() {
 const navigate = useNavigate()
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between py-6 px-4 z-20">
@@ -105,27 +105,20 @@ const navigate = useNavigate()
           Menu Utama
         </p>
         {menuItems.map((item) => {
-          const isActive = activePath === item.path;
           return (
             <a
               key={item.path}
               href={item.path}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group
-                ${isActive
-                  ? "bg-indigo-500/15 text-indigo-300 border border-indigo-500/25"
-                  : "text-slate-400 hover:text-white hover:bg-slate-800 border border-transparent"
-                }`}
+              className={"flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group"}
             >
               {/* Icon wrapper */}
-              <span className={`transition-colors duration-200 ${isActive ? "text-indigo-400" : "text-slate-500 group-hover:text-slate-300"}`}>
+              <span className={"transition-colors duration-200 "}>
                 {item.icon}
               </span>
               {item.label}
 
               {/* Active indicator */}
-              {isActive && (
-                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400" />
-              )}
+              
             </a>
           );
         })}

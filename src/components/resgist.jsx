@@ -1,8 +1,73 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function FormPendaftaran() {
+    const [mapelList, setMapelList] = useState([])
+    const [form, setForm] = useState({
+    nama: "",
+    email: "",
+    no_hp: "",
+    nisn: "",
+    sekolah: "",
+    tgl_lahir: "",
+    kelamin: "",
+    mapel_id: "",
+    metode_bayar: "",
+    })
+    const [buktiFile, setBuktiFile] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
+
+    useEffect(() => {
+    axios.get("http://localhost:3000/api/mapel")
+        .then(res => setMapelList(res.data.data))
+        .catch(err => console.error(err))
+    }, [])
+
+    const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+    }
+
+    const handleSubmit = async () => {
+    setError("")
+
+    // validasi sederhana
+    if (!form.nama || !form.email || !form.nisn || !form.sekolah || 
+        !form.tgl_lahir || !form.kelamin || !form.mapel_id || !form.metode_bayar) {
+        setError("Semua field wajib diisi.")
+        return
+    }
+
+    try {
+        setLoading(true)
+
+        // pakai FormData karena ada file upload
+        const formData = new FormData()
+        formData.append("nama",         form.nama)
+        formData.append("email",        form.email)
+        formData.append("no_hp", form.no_hp)
+        formData.append("nisn",         form.nisn)
+        formData.append("sekolah",      form.sekolah)
+        formData.append("tgl_lahir",    form.tgl_lahir)
+        formData.append("kelamin",      form.kelamin)
+        formData.append("mapel_id",     form.mapel_id)
+        formData.append("metode_bayar", form.metode_bayar)
+        if (buktiFile) formData.append("bukti_bayar", buktiFile)
+
+        await axios.post("http://localhost:3000/api/peserta", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+        })
+
+        navigate("/admin") // atau halaman lain yang kamu mau
+
+    } catch (err) {
+        setError(err.response?.data?.message || "Terjadi kesalahan, coba lagi.")
+    } finally {
+        setLoading(false)
+    }
+    }
   const navigate = useNavigate()
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 font-sans">
@@ -60,6 +125,9 @@ export default function FormPendaftaran() {
                   </label>
                   <input
                     type="text"
+                    name="nama"
+                    onChange={handleChange}
+                    value={form.nama}
                     placeholder="Masukkan nama lengkap"
                     className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-sm placeholder:text-slate-600 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all"
                   />
@@ -72,11 +140,26 @@ export default function FormPendaftaran() {
                   </label>
                   <input
                     type="email"
+                    name="email"
+                    onChange={handleChange}
+                    value={form.email}
                     placeholder="nama@email.com"
                     className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-sm placeholder:text-slate-600 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all"
                   />
                 </div>
-
+                <div className="col-span-2 flex flex-col gap-1.5">
+                  <label className="text-xs font-medium text-slate-400 tracking-wide">
+                    Nomor HP
+                  </label>
+                  <input
+                    type="number"
+                    name="no_hp"
+                    value={form.no_hp}
+                    onChange={handleChange}
+                    placeholder="Contoh: 08123456789"
+                    className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-sm placeholder:text-slate-600 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all"
+                  />
+              </div>
                 {/* NISN */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-medium text-slate-400 tracking-wide">
@@ -84,6 +167,9 @@ export default function FormPendaftaran() {
                   </label>
                   <input
                     type="number"
+                    name="nisn"
+                    onChange={handleChange}
+                    value={form.nisn}
                     placeholder="10 digit NISN"
                     className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-sm placeholder:text-slate-600 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all"
                   />
@@ -96,6 +182,9 @@ export default function FormPendaftaran() {
                   </label>
                   <input
                     type="date"
+                    name="tgl_lahir"
+                    onChange={handleChange}
+                    value={form.tgl_lahir}
                     className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-400 text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all"
                   />
                 </div>
@@ -107,6 +196,9 @@ export default function FormPendaftaran() {
                   </label>
                   <input
                     type="text"
+                    name="sekolah"
+                    onChange={handleChange}
+                    value={form.sekolah}
                     placeholder="Nama sekolah asal"
                     className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-sm placeholder:text-slate-600 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all"
                   />
@@ -123,6 +215,7 @@ export default function FormPendaftaran() {
                         type="radio"
                         name="kelamin"
                         value="L"
+                        onChange={handleChange}
                         className="accent-violet-500 w-4 h-4"
                       />
                       <span className="text-sm text-slate-300 group-hover:text-white transition-colors">
@@ -134,6 +227,7 @@ export default function FormPendaftaran() {
                         type="radio"
                         name="kelamin"
                         value="P"
+                        onChange={handleChange}
                         className="accent-violet-500 w-4 h-4"
                       />
                       <span className="text-sm text-slate-300 group-hover:text-white transition-colors">
@@ -158,16 +252,15 @@ export default function FormPendaftaran() {
                 <label className="text-xs font-medium text-slate-400 tracking-wide">
                   Mata Pelajaran yang Diikuti
                 </label>
-                <select className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all appearance-none cursor-pointer">
+                <select 
+                name="mapel_id"           
+                value={form.mapel_id}    
+                onChange={handleChange}
+                className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all appearance-none cursor-pointer">
                   <option value="" disabled>Pilih mata pelajaran...</option>
-                  <option>Matematika</option>
-                  <option>Fisika</option>
-                  <option>Kimia</option>
-                  <option>Biologi</option>
-                  <option>Informatika</option>
-                  <option>Ekonomi</option>
-                  <option>Astronomi</option>
-                  <option>Kebumian</option>
+                  {mapelList.map((m) => (   // ← ganti option hardcode jadi ini
+                        <option key={m.id} value={m.id}>{m.nama}</option>
+                    ))}
                 </select>
               </div>
             </div>
@@ -187,7 +280,11 @@ export default function FormPendaftaran() {
                   <label className="text-xs font-medium text-slate-400 tracking-wide">
                     Metode Pembayaran
                   </label>
-                  <select className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all appearance-none cursor-pointer">
+                  <select 
+                    name="metode_bayar"         
+                    value={form.metode_bayar}   
+                    onChange={handleChange}
+                  className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all appearance-none cursor-pointer">
                     <option value="" disabled>Pilih metode pembayaran...</option>
                     <option>Transfer Bank BCA</option>
                     <option>Transfer Bank BNI</option>
@@ -208,6 +305,7 @@ export default function FormPendaftaran() {
                     <input
                       type="file"
                       accept="image/*,.pdf"
+                       onChange={(e) => setBuktiFile(e.target.files[0])} 
                       className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                     />
                     <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center group-hover:bg-violet-500/20 transition-all">
@@ -227,11 +325,14 @@ export default function FormPendaftaran() {
                 </div>
               </div>
             </div>
-
+            {error && (
+            <p className="text-red-400 text-xs text-center">{error}</p>
+            )}
             {/* Submit */}
             <button
-              type="submit"
-              onClick={() => navigate('/admin')}
+              type="button"
+                onClick={handleSubmit}    
+                disabled={loading}  
               className="w-full h-12 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 text-white text-sm font-semibold tracking-wide hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-violet-900/30 mt-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
