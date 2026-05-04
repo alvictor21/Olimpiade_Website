@@ -230,6 +230,75 @@ app.get("/api/statistik", async (req, res) => {
 });
 
 // ===========================
+// ENDPOINT: GET data chart per mapel
+// ===========================
+app.get("/api/chart/mapel", async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT m.nama, COUNT(p.id) AS jumlah
+      FROM mapel m
+      LEFT JOIN peserta p ON p.mapel_id = m.id
+      GROUP BY m.id, m.nama
+      ORDER BY m.nama ASC
+    `);
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ===========================
+// ENDPOINT: GET data chart kelamin & pembayaran
+// ===========================
+app.get("/api/chart/demografi", async (req, res) => {
+  try {
+    const [[{ laki }]]      = await db.query("SELECT COUNT(*) AS laki FROM peserta WHERE kelamin = 'L'");
+    const [[{ perempuan }]] = await db.query("SELECT COUNT(*) AS perempuan FROM peserta WHERE kelamin = 'P'");
+    const [[{ lunas }]]     = await db.query("SELECT COUNT(*) AS lunas FROM peserta WHERE status_bayar = 'lunas'");
+    const [[{ belum }]]     = await db.query("SELECT COUNT(*) AS belum FROM peserta WHERE status_bayar = 'belum'");
+
+    res.json({
+      success: true,
+      data: { laki, perempuan, lunas, belum }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ===========================
+// ENDPOINT: GET statistik per mapel
+// ===========================
+app.get("/api/mapel/statistik", async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        m.id,
+        m.nama,
+        COUNT(p.id) AS total_peserta,
+        SUM(CASE WHEN p.status_bayar = 'lunas' THEN 1 ELSE 0 END) AS sudah_bayar,
+        SUM(CASE WHEN p.status_bayar = 'belum' THEN 1 ELSE 0 END) AS belum_bayar,
+        SUM(CASE WHEN p.status_bayar = 'lunas' THEN 75000 ELSE 0 END) AS total_uang
+      FROM mapel m
+      LEFT JOIN peserta p ON p.mapel_id = m.id
+      GROUP BY m.id, m.nama
+      ORDER BY m.nama ASC
+    `);
+
+    const [[{ total_semua }]] = await db.query("SELECT COUNT(*) AS total_semua FROM peserta");
+
+    const data = rows.map(r => ({
+      ...r,
+      persen: total_semua > 0 ? ((r.total_peserta / total_semua) * 100).toFixed(1) : "0.0"
+    }));
+
+    res.json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ===========================
 // JALANKAN SERVER
 // ===========================
 app.listen(PORT, () => {

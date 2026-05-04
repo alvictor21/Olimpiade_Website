@@ -8,6 +8,10 @@ import { Routes, Route } from 'react-router-dom'
 import AdminDashboard from './components/admindashboard'
 import AdminLayout from './layout/AdminLayout'
 import Peserta from './components/Peserta'
+import Mapel from './components/matapelajaran'
+import DetailMapel from './components/DetailMapel'
+
+
 function App() {
   const [count, setCount] = useState(0)
 
@@ -18,6 +22,8 @@ function App() {
        <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
         <Route path="peserta" element={<Peserta />} />  
+        <Route path="mapel" element={<Mapel />} />  
+        <Route path="mapel/:id" element={<DetailMapel />} />  
       </Route>
     </Routes>
     </>

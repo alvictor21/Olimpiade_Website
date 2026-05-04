@@ -3,10 +3,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function formatTanggal(str) {
-  const d = new Date(str);
-  return d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+  console.log("tgl_lahir:", str) // ← tambah ini sementara
+  if (!str) return "-"
+  const d = new Date(str.slice(0, 10))
+  return d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })
 }
-
 export default function Peserta() {
 
   const [peserta, setPeserta] = useState([])
@@ -215,7 +216,7 @@ export default function Peserta() {
                       <td className="px-5 py-4 text-slate-300">{p.sekolah}</td>
 
                       {/* Tgl Lahir */}
-                      <td className="px-5 py-4 text-slate-400 text-xs">{formatTanggal(p.tgl_Lahir)}</td>
+                      <td className="px-5 py-4 text-slate-400 text-xs">{formatTanggal(p.tgl_lahir)}</td>
 
                       {/* Kelamin */}
                       <td className="px-5 py-4">

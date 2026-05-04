@@ -37,17 +37,8 @@ const menuItems = [
         <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
       </svg>
     ),
-  },
-  {
-    label: "Pembayaran",
-    path: "/admin/pembayaran",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-        <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-        <line x1="1" y1="10" x2="23" y2="10" />
-      </svg>
-    ),
-  },
+  }
+  
 ];
 
 const roleColors = {
@@ -109,7 +100,7 @@ const navigate = useNavigate()
             <a
               key={item.path}
               href={item.path}
-              className={"flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group"}
+              className={"flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group active:font-extrabold"}
             >
               {/* Icon wrapper */}
               <span className={"transition-colors duration-200 "}>

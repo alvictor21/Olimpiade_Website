@@ -1,4 +1,5 @@
 import StatCards from "./StatCards";
+import Charts from "./Chart";
 
 export default function AdminDashboard() {
   return (
@@ -31,9 +32,15 @@ export default function AdminDashboard() {
         </section>
 
         {/* Placeholder for next components */}
-        <div className="rounded-2xl border border-dashed border-slate-800 bg-slate-900/40 h-64 flex items-center justify-center">
-          <p className="text-slate-600 text-sm">Komponen berikutnya akan ditampilkan di sini</p>
-        </div>
+        
+        
+          <section className="mb-8">
+            <h2 className="text-xs font-semibold tracking-[0.14em] uppercase text-slate-500 mb-4">
+              Grafik & Statistik
+            </h2>
+            <Charts />
+        </section>
+        
 
       </div>
     </div>
