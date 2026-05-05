@@ -118,7 +118,11 @@ const navigate = useNavigate()
       {/* BOTTOM — Logout */}
       <div className="flex flex-col gap-3">
         <div className="w-full h-px bg-slate-800" />
-        <button onClick={()=> navigate('/')} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all duration-200 group w-full">
+        <button onClick={() => {
+          localStorage.removeItem("token")
+          localStorage.removeItem("admin")
+          navigate("/")
+        }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all duration-200 group w-full">
           <svg className="w-5 h-5 text-slate-500 group-hover:text-red-400 transition-colors" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
             <polyline points="16 17 21 12 16 7" />

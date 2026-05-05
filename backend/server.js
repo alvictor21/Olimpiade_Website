@@ -3,6 +3,10 @@ import mysql from "mysql2/promise";
 import cors from "cors";
 import multer from "multer";
 import path from "path";
+import jwt from "jsonwebtoken"
+import bcrypt from "bcryptjs"
+
+const SECRET_KEY = "olimpiade_sains_2025" // ← bisa diganti string apapun
 
 const app = express();
 const PORT = 3000;
@@ -293,6 +297,49 @@ app.get("/api/mapel/statistik", async (req, res) => {
     }));
 
     res.json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ===========================
+// ENDPOINT: POST login
+// ===========================
+app.post("/api/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ success: false, message: "Username dan password wajib diisi." });
+    }
+
+    // cari admin di database
+    const [rows] = await db.query("SELECT * FROM admin WHERE username = ?", [username]);
+    if (rows.length === 0) {
+      return res.status(401).json({ success: false, message: "Username atau password salah." });
+    }
+
+    const admin = rows[0];
+
+    // cek password — pakai plaintext dulu
+    const cocok = password === admin.password;
+    if (!cocok) {
+      return res.status(401).json({ success: false, message: "Username atau password salah." });
+    }
+
+    // buat token
+    const token = jwt.sign(
+      { id: admin.id, username: admin.username, nama: admin.nama, role: admin.role },
+      SECRET_KEY,
+      { expiresIn: "8h" }
+    );
+
+    res.json({
+      success: true,
+      message: "Login berhasil!",
+      token,
+      admin: { id: admin.id, username: admin.username, nama: admin.nama, role: admin.role }
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

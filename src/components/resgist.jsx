@@ -31,42 +31,42 @@ export default function FormPendaftaran() {
     }
 
     const handleSubmit = async () => {
-    setError("")
+      setError("")
 
-    // validasi sederhana
-    if (!form.nama || !form.email || !form.nisn || !form.sekolah || 
-        !form.tgl_lahir || !form.kelamin || !form.mapel_id || !form.metode_bayar) {
-        setError("Semua field wajib diisi.")
-        return
-    }
+      // validasi sederhana
+      if (!form.nama || !form.email || !form.nisn || !form.sekolah || 
+          !form.tgl_lahir || !form.kelamin || !form.mapel_id || !form.metode_bayar) {
+          setError("Semua field wajib diisi.")
+          return
+      }
 
-    try {
-        setLoading(true)
+      try {
+          setLoading(true)
 
-        // pakai FormData karena ada file upload
-        const formData = new FormData()
-        formData.append("nama",         form.nama)
-        formData.append("email",        form.email)
-        formData.append("no_hp", form.no_hp)
-        formData.append("nisn",         form.nisn)
-        formData.append("sekolah",      form.sekolah)
-        formData.append("tgl_lahir",    form.tgl_lahir)
-        formData.append("kelamin",      form.kelamin)
-        formData.append("mapel_id",     form.mapel_id)
-        formData.append("metode_bayar", form.metode_bayar)
-        if (buktiFile) formData.append("bukti_bayar", buktiFile)
+          // pakai FormData karena ada file upload
+          const formData = new FormData()
+          formData.append("nama",         form.nama)
+          formData.append("email",        form.email)
+          formData.append("no_hp",        form.no_hp)
+          formData.append("nisn",         form.nisn)
+          formData.append("sekolah",      form.sekolah)
+          formData.append("tgl_lahir",    form.tgl_lahir)
+          formData.append("kelamin",      form.kelamin)
+          formData.append("mapel_id",     form.mapel_id)
+          formData.append("metode_bayar", form.metode_bayar)
+          if (buktiFile) formData.append("bukti_bayar", buktiFile)
 
-        await axios.post("http://localhost:3000/api/peserta", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-        })
+          await axios.post("http://localhost:3000/api/peserta", formData, {
+          headers: { "Content-Type": "multipart/form-data" }
+          })
 
-        navigate("/admin") // atau halaman lain yang kamu mau
+          navigate("/admin") // atau halaman lain yang kamu mau
 
-    } catch (err) {
-        setError(err.response?.data?.message || "Terjadi kesalahan, coba lagi.")
-    } finally {
-        setLoading(false)
-    }
+      } catch (err) {
+          setError(err.response?.data?.message || "Terjadi kesalahan, coba lagi.")
+      } finally {
+          setLoading(false)
+      }
     }
   const navigate = useNavigate()
   return (
@@ -258,7 +258,7 @@ export default function FormPendaftaran() {
                 onChange={handleChange}
                 className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all appearance-none cursor-pointer">
                   <option value="" disabled>Pilih mata pelajaran...</option>
-                  {mapelList.map((m) => (   // ← ganti option hardcode jadi ini
+                  {mapelList.map((m) => (  
                         <option key={m.id} value={m.id}>{m.nama}</option>
                     ))}
                 </select>

@@ -10,20 +10,33 @@ import AdminLayout from './layout/AdminLayout'
 import Peserta from './components/Peserta'
 import Mapel from './components/matapelajaran'
 import DetailMapel from './components/DetailMapel'
+import Login from './components/Login'
 
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem("token")
+  if (!token) return <Navigate to="/" replace />
+  return children
+}
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-    <Routes>
-      <Route path="/" element={<FormPendaftaran />} />
-       <Route path="/admin" element={<AdminLayout />}>
+   <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/regist" element={<FormPendaftaran />} />
+
+      
+      <Route path="/admin" element={
+        <ProtectedRoute>
+          <AdminLayout />
+        </ProtectedRoute>
+      }>
         <Route index element={<AdminDashboard />} />
-        <Route path="peserta" element={<Peserta />} />  
-        <Route path="mapel" element={<Mapel />} />  
-        <Route path="mapel/:id" element={<DetailMapel />} />  
+        <Route path="peserta" element={<Peserta />} />
+        <Route path="mapel" element={<Mapel />} />
+        <Route path="mapel/:id" element={<DetailMapel />} />
       </Route>
     </Routes>
     </>
