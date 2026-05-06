@@ -40,7 +40,7 @@ const storage = multer.diskStorage({
     const ext = path.extname(file.originalname);
     cb(null, "bukti-" + unique + ext); // contoh: bukti-1234567890-123456789.jpg
   },
-});
+}); 
 
 const upload = multer({
   storage,

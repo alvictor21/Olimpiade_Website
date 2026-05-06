@@ -33,7 +33,7 @@ export default function Peserta() {
     try {
       setLoading(true)
       const params = filterMapel ? `?mapel_id=${filterMapel}` : ""
-      const res = await axios.get(`http://localhost:3000/api/peserta${params}`)
+      const res = await axios.get(`http://localhost:3000/api/peserta${params}`) //untuk fitur filter,menampilkan peserta dengan ${params} alias dengan id mapel tertentu,jika id kosong,tampilkan semua
       setPeserta(res.data.data)
     } catch (err) {
       console.error(err)
@@ -117,7 +117,7 @@ export default function Peserta() {
           <p className="text-slate-500 text-sm">Olimpiade Sains 2025 · {filtered.length} peserta ditemukan</p>
         </div>
 
-         <button onClick={()=> navigate('/')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs mb-6 font-medium text-indigo-300 bg-indigo-200/10 border border-indigo-500/20 hover:bg-indigo-500/20 transition-all">
+         <button onClick={()=> navigate('/regist')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs mb-6 font-medium text-indigo-300 bg-indigo-200/10 border border-indigo-500/20 hover:bg-indigo-500/20 transition-all">
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
               <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
               <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />

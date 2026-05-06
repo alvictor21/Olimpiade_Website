@@ -284,7 +284,7 @@ export default function FormPendaftaran() {
                     name="metode_bayar"         
                     value={form.metode_bayar}   
                     onChange={handleChange}
-                  className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all appearance-none cursor-pointer">
+                    className="h-11 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all appearance-none cursor-pointer">
                     <option value="" disabled>Pilih metode pembayaran...</option>
                     <option>Transfer Bank BCA</option>
                     <option>Transfer Bank BNI</option>
